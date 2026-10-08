@@ -1,0 +1,114 @@
+= Getting started with SSH on Linux
+Kyaw Swar Hein
+:toc:
+:source-highlighter: highlight.js
+
+Secure Shell (SSH) lets you log in to and run commands on a remote Linux system over
+an encrypted connection. This tutorial shows how to enable the SSH server, connect to it,
+and set up key-based authentication.
+
+== Prerequisites
+
+* A Fedora system, or another Linux distribution that uses the `dnf` package manager (a virtual machine works well)
+* A user account with `sudo` privileges
+* Network access between the two systems
+
+== Install and start the SSH server
+
+. Install the OpenSSH server package:
++
+[source,bash]
+----
+sudo dnf install openssh-server
+----
+
+. Enable the service and start it immediately:
++
+[source,bash]
+----
+sudo systemctl enable --now sshd
+----
+
+. Verify that the service is running:
++
+[source,bash]
+----
+systemctl status sshd
+----
++
+The output should show `active (running)`.
+
+== Allow SSH through the firewall
+
+On Fedora and similar systems, `firewalld` is active by default. Allow the SSH service:
+
+[source,bash]
+----
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload
+----
+
+== Connect to the server
+
+Find the server's IP address:
+
+[source,bash]
+----
+ip addr show
+----
+
+Then, from another machine, connect:
+
+[source,bash]
+----
+ssh username@192.168.1.50
+----
+
+Replace `username` and the IP address with your own values. The first time you connect,
+SSH asks you to confirm the server's fingerprint. Type `yes` to continue.
+
+== Set up key-based authentication
+
+Keys are more secure than passwords and let you log in without typing one each time.
+
+. On your *client* machine, generate a key pair:
++
+[source,bash]
+----
+ssh-keygen -t ed25519
+----
+
+. Copy the public key to the server:
++
+[source,bash]
+----
+ssh-copy-id username@192.168.1.50
+----
+
+. Log in again. You should now connect using your key.
+
+== Troubleshooting
+
+Connection refused::
+Check that `sshd` is running and listening on port 22:
++
+[source,bash]
+----
+sudo ss -tlnp | grep :22
+----
+
+Connection times out::
+The firewall is probably blocking the connection. Review the firewall step above.
+
+Other login problems::
+Read the SSH server log:
++
+[source,bash]
+----
+sudo journalctl -u sshd
+----
+
+== Next steps
+
+* Disable password login after your key works.
+* Read the `ssh_config` and `sshd_config` man pages.

@@ -1,0 +1,20 @@
+= Linux Docs-as-Code Demo
+Kyaw Swar Hein
+:description: A small documentation site written in AsciiDoc and built automatically with GitHub Actions.
+
+This site is a small example of *docs-as-code*: the documentation is plain text
+stored in Git, reviewed through pull requests, and built into a website automatically.
+
+== Tutorials
+
+* link:ssh-basics.html[Getting started with SSH on Linux]
+
+== How this site is built
+
+. The source files are written in AsciiDoc, a plain-text format widely used for technical documentation.
+. Every push to the `main` branch triggers a GitHub Actions workflow.
+. The workflow converts the `.adoc` files to HTML with Asciidoctor and publishes them with GitHub Pages.
+
+== Contributing
+
+Found a mistake or want to add a tutorial? See the repository's `CONTRIBUTING.md`.
